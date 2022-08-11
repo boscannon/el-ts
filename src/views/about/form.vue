@@ -27,12 +27,12 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
 import type { FormInstance, FormRules } from 'element-plus'
-import { ElNotification } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import type { ActionsInterface } from '@/interface'
 import type { RowInterface } from './interface'
 import { useI18n } from "vue-i18n"
+import resource from "@/api/resource"
 
 const { t } = useI18n();
 const route = useRoute();
@@ -47,19 +47,16 @@ const ruleForm = ref<RowInterface>({
   author: '',
 })
 
-const check = () => {
+const apiResource: resource = new resource('abouts');
+
+const getData = () => {
   if(route.params.id){
     actionStatus.value = 'edit';
-    axios.get(`http://localhost:3000/abouts/${ route.params.id }`)
+    apiResource.show(route.params.id)
     .then(({ data }) => ruleForm.value = data)
-    .catch(error => ElNotification({
-      title: 'Error',
-      type: 'error',
-      message: error.message,
-    }))
   }
 }
-check();
+getData();
 
 const rules = reactive<FormRules>({
   title: [
@@ -72,63 +69,39 @@ const rules = reactive<FormRules>({
   ],  
 })
 
-const submitForm = async (formEl: FormInstance) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (!valid) return;
+    let result: any = '';
+    loading.value = true;
+
     switch (actionStatus.value) {
       case 'add':
-        addRow();
+        result = apiResource.store<RowInterface>(ruleForm.value);
         break;
       case 'edit':
-        editRow();
+        result = apiResource.update<RowInterface>(route.params.id, ruleForm.value)
         break;
     }
-  })
-}
 
-const addRow = () => {
-  loading.value = true;
-  axios.post('http://localhost:3000/abouts', ruleForm.value)
-  .then(response => {
-    ElNotification({
-      title: 'Success',
-      type: 'success',
-      message: t('Success', { action: actionMap[actionStatus.value] }),
+    result.then(() => {
+      ElMessage({
+        type: 'success',
+        message: t('Success', { action: actionMap[actionStatus.value] }),
+      })
+      back();
     })
-    back();
+    .finally(() => loading.value = false);
   })
-  .catch(error => ElNotification({
-    title: 'Error',
-    type: 'error',
-    message: error.message,
-  }))
-  .finally(() => loading.value = false);
-}
-
-const editRow = () => {
-  console.log('editRow');
-  axios.put(`http://localhost:3000/abouts/${ route.params.id }`, ruleForm.value)
-  .then(response => {
-    ElNotification({
-      title: 'Success',
-      type: 'success',
-      message: t('Success', { action: actionMap[actionStatus.value] }),
-    })
-    back();
-  })
-  .catch(error => ElNotification({
-    title: 'Error',
-    type: 'error',
-    message: error.message,
-  }))
-  .finally(() => loading.value = false);
 }
 
 const back = () => {
   router.push({ name: 'AboutList' })
 }
 
-const resetForm = (formEl: FormInstance) => {
+const resetForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
   formEl.resetFields()
 }
 

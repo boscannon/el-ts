@@ -2,6 +2,10 @@
   <div class="app-container">
     <!-- option -->
     <div class="filter-container">
+      <el-input v-model="search" :placeholder="$t('Search')" @keyup.enter="filterList" style="width: 200px;" />
+      <el-button type="primary" :icon="Search" @click="filterList">
+        {{ $t('Search') }}
+      </el-button>      
       <el-button type="primary" :icon="Plus" @click="$router.push({ name: 'AboutCreate' })">
         {{ $t('Add') }}
       </el-button>
@@ -29,46 +33,36 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import axios from 'axios'
-import { Delete, Edit, Plus } from '@element-plus/icons-vue'
-import { ElNotification } from 'element-plus'
+import { Delete, Edit, Plus, Search } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import { RowInterface } from './interface'
 import { useI18n } from "vue-i18n"
-
+import resource from "@/api/resource"
 
 const { t } = useI18n();
 const loading = ref<boolean>(false);
 const search = ref<string>('');
 const table = reactive<{ data: RowInterface[] }>({ data: [] });
+const apiResource: resource = new resource('abouts');
 
 const handleDelete = (index: number, row: RowInterface) => {
-  axios.delete(`http://localhost:3000/abouts/${ row.id }`)
+  apiResource.delete(row.id)
   .then(response => {
-    ElNotification({
-      title: 'Success',
+    ElMessage({
       type: 'success',
       message: t('Success', { action: t('Delete') }),
     })
     getList();
   })
-  .catch(error => ElNotification({
-    title: 'Error',
-    type: 'error',
-    message: error.message,
-  }))
+}
+
+const filterList = () => {
+  getList()
 }
 
 const getList = () => {
-  loading.value = true;
-  axios.get('http://localhost:3000/abouts', {
-    params: { q: search.value }
-  })
+  apiResource.list<{ q: string }>({ q: search.value })
   .then(({ data }) => table.data = data)
-  .catch(error => ElNotification({
-    title: 'Error',
-    type: 'error',
-    message: error.message,
-  }))
   .finally(() => loading.value = false);
 
 }
