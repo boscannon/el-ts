@@ -13,7 +13,14 @@
     </el-form-item>
     <el-form-item label="author" prop="author">
       <el-input v-model="ruleForm.author" />
-    </el-form-item>    
+    </el-form-item>   
+    <el-form-item label="comments" prop="comments">
+      <el-autocomplete
+        v-model="ruleForm.comments"
+        :fetch-suggestions="queryComments"
+        placeholder="Please input"
+      />
+    </el-form-item>         
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
         {{ actionMap[actionStatus] }}
@@ -45,9 +52,11 @@ const ruleFormRef = ref<FormInstance>()
 const ruleForm = ref<RowInterface>({ 
   title: '',
   author: '',
+  state: [],
 })
 
 const apiResource: resource = new resource('abouts');
+const commentsResource: resource = new resource('comments');
 
 const getData = () => {
   if(route.params.id){
@@ -66,6 +75,10 @@ const rules = reactive<FormRules>({
   author: [
     { required: true, message: t('Required'), trigger: 'blur' },
     { min: 1, max: 50, message: t('Length Limit', { min: 1, max: 50 }), trigger: 'blur' },
+  ],  
+  state: [
+    { required: true, message: t('Required'), trigger: 'blur', type: 'array' },
+    { len: 1, max: 5, message: t('Select Limit', { min: 1, max: 5 }), trigger: 'blur' },
   ],  
 })
 
@@ -94,6 +107,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     })
     .finally(() => loading.value = false);
   })
+}
+
+const queryComments = (queryString: string, cb: (arg: any) => void) => {
+  commentsResource.list<{ name: string }>({ name: queryString })
+  .then(({ data }) => console.log(data))
 }
 
 const back = () => {

@@ -60,11 +60,10 @@ const filterList = () => {
   getList()
 }
 
-const getList = () => {
-  apiResource.list<{ q: string }>({ q: search.value })
-  .then(({ data }) => table.data = data)
-  .finally(() => loading.value = false);
-
+const getList = async () => {
+  loading.value = true;
+  table.data = await apiResource.list<{ q: string }, RowInterface[]>({ q: search.value })
+  loading.value = false;
 }
 
 getList()

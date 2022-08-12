@@ -8,11 +8,13 @@ class Resource {
   constructor(uri: string) {
     this.uri = uri;
   }
-  list<T>(query: T) {
-    return request({
-      url: '/' + this.uri,
-      method: 'get',
-      params: query,
+  list<T, U>(query: T): Promise<U> {
+    return new Promise((resolve) => {
+      request({
+        url: '/' + this.uri,
+        method: 'get',
+        params: query,
+      }).then(({ data }) => resolve(data))
     });
   }
   store<T>(resource: T) {

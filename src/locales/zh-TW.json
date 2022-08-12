@@ -2,6 +2,7 @@
   "message": "hello i18n !!",
   "Required": "請填寫這個欄位",
   "Length Limit": "長度為 {min} 到 {max} 之間",
+  "Select Limit": "請選擇 {min} 到 {max} 之間",
   "Success": "{action}成功",
   "Back": "返回",
   "Add": "新增",
