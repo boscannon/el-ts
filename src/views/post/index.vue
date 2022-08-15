@@ -6,7 +6,7 @@
       <el-button type="primary" :icon="Search" @click="filterList">
         {{ $t('Search') }}
       </el-button>      
-      <el-button type="primary" :icon="Plus" @click="$router.push({ name: 'AboutCreate' })">
+      <el-button type="primary" :icon="Plus" @click="$router.push({ name: 'PostCreate' })">
         {{ $t('Add') }}
       </el-button>
     </div>
@@ -15,10 +15,10 @@
     <el-table :data="table.data" style="width: 100%" v-loading="loading">
       <el-table-column label="id" prop="id" />
       <el-table-column label="title" prop="title" />
-      <el-table-column label="author" prop="author" />
+      <el-table-column label="name" prop="name" />
       <el-table-column label="actions">
         <template #default="scope">
-          <el-button size="small" :icon="Edit" @click="$router.push({ name: 'AboutEdit', params: { id: scope.row.id }})">
+          <el-button size="small" :icon="Edit" @click="$router.push({ name: 'PostEdit', params: { id: scope.row.id }})">
             {{ $t('Edit') }}
           </el-button>
           <el-button size="small" type="danger" :icon="Delete" @click="handleDelete(scope.$index, scope.row)">
@@ -34,16 +34,15 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { Delete, Edit, Plus, Search } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { RowInterface } from './interface'
+import { ElMessage,  } from 'element-plus'
+import type { ListInterface, RowInterface } from './action'
+import { apiResource } from './action'
 import { useI18n } from "vue-i18n"
-import resource from "@/api/resource"
 
 const { t } = useI18n();
 const loading = ref<boolean>(false);
 const search = ref<string>('');
 const table = reactive<{ data: RowInterface[] }>({ data: [] });
-const apiResource: resource = new resource('abouts');
 
 const handleDelete = (index: number, row: RowInterface) => {
   apiResource.delete(row.id)
@@ -62,7 +61,8 @@ const filterList = () => {
 
 const getList = async () => {
   loading.value = true;
-  table.data = await apiResource.list<{ q: string }, RowInterface[]>({ q: search.value })
+  let result: ListInterface = await apiResource.list<{ q: string }, ListInterface>({ q: search.value })
+  table.data = result.data;
   loading.value = false;
 }
 

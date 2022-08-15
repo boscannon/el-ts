@@ -8,29 +8,29 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView
   },
   {
-    path: '/about',
-    name: 'About',
+    path: '/post',
+    name: 'Post',
     // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
+    // this generates a separate chunk (post.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     children: [
       {
         path: '',
-        name: 'AboutList',
-        meta: { title: 'About' },
-        component: () => import(/* webpackChunkName: "about" */ '../views/about/index.vue'),
+        name: 'PostList',
+        meta: { title: 'Post' },
+        component: () => import(/* webpackChunkName: "post" */ '../views/post/index.vue'),
       },
       {
         path: 'create',
-        name: 'AboutCreate',
+        name: 'PostCreate',
         meta: { title: 'Create' },
-        component: () => import(/* webpackChunkName: "about" */ '../views/about/form.vue'),
+        component: () => import(/* webpackChunkName: "post" */ '../views/post/form.vue'),
       },
       {
         path: ':id/edit',
-        name: 'AboutEdit',
+        name: 'PostEdit',
         meta: { title: 'Edit' },
-        component: () => import(/* webpackChunkName: "about" */ '../views/about/form.vue'),
+        component: () => import(/* webpackChunkName: "post" */ '../views/post/form.vue'),
       },
     ],
   }

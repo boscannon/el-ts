@@ -11,16 +11,9 @@
     <el-form-item label="title" prop="title">
       <el-input v-model="ruleForm.title" />
     </el-form-item>
-    <el-form-item label="author" prop="author">
-      <el-input v-model="ruleForm.author" />
-    </el-form-item>   
-    <el-form-item label="comments" prop="comments">
-      <el-autocomplete
-        v-model="ruleForm.comments"
-        :fetch-suggestions="queryComments"
-        placeholder="Please input"
-      />
-    </el-form-item>         
+    <el-form-item label="name" prop="name">
+      <el-input v-model="ruleForm.name" />
+    </el-form-item>           
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
         {{ actionMap[actionStatus] }}
@@ -37,7 +30,7 @@ import { useRouter, useRoute } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import type { ActionsInterface } from '@/interface'
-import type { RowInterface } from './interface'
+import type { RowInterface } from './action'
 import { useI18n } from "vue-i18n"
 import resource from "@/api/resource"
 
@@ -51,8 +44,7 @@ const loading = ref<boolean>(false);
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = ref<RowInterface>({ 
   title: '',
-  author: '',
-  state: [],
+  name: '',
 })
 
 const apiResource: resource = new resource('abouts');
@@ -72,14 +64,10 @@ const rules = reactive<FormRules>({
     { required: true, message: t('Required'), trigger: 'blur' },
     { min: 1, max: 10, message: t('Length Limit', { min: 1, max: 10 }), trigger: 'blur' },
   ],
-  author: [
+  name: [
     { required: true, message: t('Required'), trigger: 'blur' },
     { min: 1, max: 50, message: t('Length Limit', { min: 1, max: 50 }), trigger: 'blur' },
-  ],  
-  state: [
-    { required: true, message: t('Required'), trigger: 'blur', type: 'array' },
-    { len: 1, max: 5, message: t('Select Limit', { min: 1, max: 5 }), trigger: 'blur' },
-  ],  
+  ],    
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -109,13 +97,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   })
 }
 
-const queryComments = (queryString: string, cb: (arg: any) => void) => {
-  commentsResource.list<{ name: string }>({ name: queryString })
-  .then(({ data }) => console.log(data))
-}
-
 const back = () => {
-  router.push({ name: 'AboutList' })
+  router.push({ name: 'PostList' })
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {
