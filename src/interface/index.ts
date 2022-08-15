@@ -3,7 +3,11 @@ export interface GlobaActionsInterface {
   edit: string
 }
 
-export interface GlobaListInterface {
-  total: number
-  current_page: number
+export interface GlobaListInterface<LIST> {
+  data: {
+    total: number
+    current_page: number
+    data: LIST
+  }
+  message: string
 }

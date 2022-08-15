@@ -1,9 +1,7 @@
 import resource from "@/api/resource"
 import type { GlobaListInterface } from '@/interface'
 
-export interface ListInterface extends GlobaListInterface {
-  data: RowInterface[]
-}
+export type ListInterface = GlobaListInterface<RowInterface[]>
 
 export interface RowInterface {
   id?: number
@@ -11,4 +9,4 @@ export interface RowInterface {
   name: string
 }
 
-export const apiResource: resource = new resource('post');
+export const apiResource: resource = new resource('commodities');

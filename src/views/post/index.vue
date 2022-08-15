@@ -42,7 +42,7 @@ import { useI18n } from "vue-i18n"
 const { t } = useI18n();
 const loading = ref<boolean>(false);
 const search = ref<string>('');
-const table = reactive<{ data: RowInterface[] }>({ data: [] });
+const table = reactive<{ data: RowInterface[], page: number }>({ data: [], page: 1 });
 
 const handleDelete = (index: number, row: RowInterface) => {
   apiResource.delete(row.id)
@@ -61,8 +61,9 @@ const filterList = () => {
 
 const getList = async () => {
   loading.value = true;
-  let result: ListInterface = await apiResource.list<{ q: string }, ListInterface>({ q: search.value })
-  table.data = result.data;
+  let { data: { data, current_page } }: ListInterface = await apiResource.list<{ q: string }, ListInterface>({ q: search.value })
+  table.data = data;
+  table.page = current_page;
   loading.value = false;
 }
 
