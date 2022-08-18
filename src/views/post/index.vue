@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- option -->
     <div class="filter-container">
-      <el-input v-model="search" :placeholder="$t('Search')" @keyup.enter="filterList" style="width: 200px;" />
+      <el-input v-model="search.query" :placeholder="$t('Search')" @keyup.enter="filterList" style="width: 200px;" />
       <el-button type="primary" :icon="Search" @click="filterList">
         {{ $t('Search') }}
       </el-button>      
@@ -28,6 +28,20 @@
       </el-table-column>
     </el-table>
     
+    <!-- page -->
+    <div class="list-pagination-block">
+      <el-pagination
+        v-model:currentPage="table.current_page"
+        :page-size="search.per_page"
+        background
+        layout="sizes, prev, pager, next, jumper"
+        :total="table.total"
+        :page-sizes="[10, 50, 100, 200]"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>    
+    
   </div>
 </template>
 
@@ -35,14 +49,14 @@
 import { ref, reactive } from 'vue'
 import { Delete, Edit, Plus, Search } from '@element-plus/icons-vue'
 import { ElMessage,  } from 'element-plus'
-import type { ListInterface, RowInterface } from './action'
+import type { SearchInterface, ListInterface, RowInterface } from './action'
 import { apiResource } from './action'
 import { useI18n } from "vue-i18n"
 
 const { t } = useI18n();
 const loading = ref<boolean>(false);
-const search = ref<string>('');
-const table = reactive<{ data: RowInterface[], page: number }>({ data: [], page: 1 });
+const search = reactive<SearchInterface>({ query: '', page: 1, per_page: 10 });
+const table = ref<ListInterface>({ data: [], current_page: 1, total: 1 });
 
 const handleDelete = (index: number, row: RowInterface) => {
   apiResource.delete(row.id)
@@ -56,16 +70,24 @@ const handleDelete = (index: number, row: RowInterface) => {
 }
 
 const filterList = () => {
+  search.page = 1;
   getList()
 }
 
 const getList = async () => {
   loading.value = true;
-  let { data: { data, current_page } }: ListInterface = await apiResource.list<{ q: string }, ListInterface>({ q: search.value })
-  table.data = data;
-  table.page = current_page;
+  table.value = await apiResource.list<SearchInterface, ListInterface>(search)
   loading.value = false;
 }
 
+const handleSizeChange = (val: number) => {
+  search.per_page = val;
+  getList()
+}
+
+const handleCurrentChange = (val: number) => {
+  search.page = val;
+  getList()
+}
 getList()
 </script>

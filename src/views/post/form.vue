@@ -29,26 +29,23 @@ import { reactive, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import type { ActionsInterface } from '@/interface'
+import type { GlobaActionsInterface } from '@/interface'
 import type { RowInterface } from './action'
 import { useI18n } from "vue-i18n"
-import resource from "@/api/resource"
+import { apiResource } from './action'
 
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-const actionMap: ActionsInterface = { add: t('Add'), edit: t('Edit') };
-const actionStatus = ref<keyof ActionsInterface>('add');
+const actionMap: GlobaActionsInterface = { add: t('Add'), edit: t('Edit') };
+const actionStatus = ref<keyof GlobaActionsInterface>('add');
 const loading = ref<boolean>(false);
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = ref<RowInterface>({ 
   title: '',
   name: '',
 })
-
-const apiResource: resource = new resource('abouts');
-const commentsResource: resource = new resource('comments');
 
 const getData = () => {
   if(route.params.id){

@@ -19,4 +19,8 @@
 .filter-container {
   padding-bottom: 10px;
 }
+
+.list-pagination-block{
+  padding: 50px 0px;
+}
 </style>

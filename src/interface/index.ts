@@ -4,10 +4,7 @@ export interface GlobaActionsInterface {
 }
 
 export interface GlobaListInterface<LIST> {
-  data: {
-    total: number
-    current_page: number
-    data: LIST
-  }
-  message: string
+  total: number
+  current_page: number
+  data: LIST
 }
