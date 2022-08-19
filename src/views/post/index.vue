@@ -13,6 +13,7 @@
 
     <!-- table -->
     <el-table :data="table.data" style="width: 100%" v-loading="loading">
+      <el-table-column label="#" type="index" />
       <el-table-column label="id" prop="id" />
       <el-table-column label="title" prop="title" />
       <el-table-column label="name" prop="name" />

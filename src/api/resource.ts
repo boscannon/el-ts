@@ -17,31 +17,39 @@ class Resource {
       }).then(({ data }) => resolve(data))
     });
   }
-  store<T>(resource: T) {
-    return request({
-      url: '/' + this.uri,
-      method: 'post',
-      data: resource,
-    });
+  store<T, U>(resource: T): Promise<U> {
+    return new Promise((resolve) => {
+      return request({
+        url: '/' + this.uri,
+        method: 'post',
+        data: resource,
+      }).then(({ data }) => resolve(data))
+    });    
   }
-  show(id: any) {
-    return request({
-      url: '/' + this.uri + '/' + id,
-      method: 'get',
-    });
+  show<U>(id: any): Promise<U> {
+    return new Promise((resolve) => {
+      return request({
+        url: '/' + this.uri + '/' + id,
+        method: 'get',
+      }).then(({ data }) => resolve(data))
+    });    
   }
-  update<T>(id: any, resource: T) {
-    return request({
-      url: '/' + this.uri + '/' + id,
-      method: 'put',
-      data: resource,
-    });
+  update<T, U>(id: any, resource: T): Promise<U> {
+    return new Promise((resolve) => {
+      return request({
+        url: '/' + this.uri + '/' + id,
+        method: 'put',
+        data: resource,
+      }).then(({ data }) => resolve(data))
+    });      
   }
-  delete(id: any) {
-    return request({
-      url: '/' + this.uri + '/' + id,
-      method: 'delete',
-    });
+  delete<U>(id: any): Promise<U> {
+    return new Promise((resolve) => {
+      return request({
+        url: '/' + this.uri + '/' + id,
+        method: 'delete',
+      }).then(({ data }) => resolve(data))
+    });     
   }  
 }
 

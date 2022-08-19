@@ -3,8 +3,18 @@ export interface GlobaActionsInterface {
   edit: string
 }
 
-export interface GlobaListInterface<LIST> {
+export interface GlobaSearchInterface {
+  query: string
+  page: number
+  per_page: number
+}
+
+export interface GlobaListInterface<T> {
   total: number
   current_page: number
-  data: LIST
+  data: T
+}
+
+export interface GlobaMessageInterface {
+  message: string
 }

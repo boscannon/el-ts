@@ -1,13 +1,9 @@
 import resource from "@/api/resource"
-import type { GlobaListInterface } from '@/interface'
+import type { GlobaSearchInterface, GlobaListInterface } from '@/interface'
 
 export type ListInterface = GlobaListInterface<RowInterface[]>
 
-export interface SearchInterface {
-  query: string
-  page: number
-  per_page: number
-}
+export type SearchInterface = GlobaSearchInterface;
 
 export interface RowInterface {
   id?: number

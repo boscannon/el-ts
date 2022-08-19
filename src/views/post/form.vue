@@ -29,7 +29,7 @@ import { reactive, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import type { GlobaActionsInterface } from '@/interface'
+import type { GlobaActionsInterface, GlobaMessageInterface } from '@/interface'
 import type { RowInterface } from './action'
 import { useI18n } from "vue-i18n"
 import { apiResource } from './action'
@@ -47,11 +47,10 @@ const ruleForm = ref<RowInterface>({
   name: '',
 })
 
-const getData = () => {
+const getData = async () => {
   if(route.params.id){
     actionStatus.value = 'edit';
-    apiResource.show(route.params.id)
-    .then(({ data }) => ruleForm.value = data)
+    ruleForm.value = await apiResource.show<RowInterface>(route.params.id)
   }
 }
 getData();
@@ -69,29 +68,27 @@ const rules = reactive<FormRules>({
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
-    if (!valid) return;
-    let result: any = '';
+  try{
+    await formEl.validate();
+    let result:  GlobaMessageInterface = { message: '' };
     loading.value = true;
 
     switch (actionStatus.value) {
       case 'add':
-        result = apiResource.store<RowInterface>(ruleForm.value);
+        result = await apiResource.store<RowInterface, GlobaMessageInterface>(ruleForm.value)
         break;
       case 'edit':
-        result = apiResource.update<RowInterface>(route.params.id, ruleForm.value)
+        result = await apiResource.update<RowInterface, GlobaMessageInterface>(route.params.id, ruleForm.value)
         break;
     }
-
-    result.then(() => {
-      ElMessage({
-        type: 'success',
-        message: t('Success', { action: actionMap[actionStatus.value] }),
-      })
-      back();
-    })
-    .finally(() => loading.value = false);
-  })
+    ElMessage({ type: 'success', message: result.message}) 
+    back();
+  }catch(e){
+    console.log(e);
+  }
+  finally {
+    loading.value = false
+  }
 }
 
 const back = () => {
