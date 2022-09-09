@@ -33,6 +33,33 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "post" */ '../views/post/form.vue'),
       },
     ],
+  },
+  {
+    path: '/category',
+    name: 'Category',
+    // route level code-splitting
+    // this generates a separate chunk (category.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    children: [
+      {
+        path: '',
+        name: 'CategoryList',
+        meta: { title: 'Category' },
+        component: () => import(/* webpackChunkName: "category" */ '../views/category/index.vue'),
+      },
+      {
+        path: 'create',
+        name: 'CategoryCreate',
+        meta: { title: 'Create' },
+        component: () => import(/* webpackChunkName: "category" */ '../views/category/form.vue'),
+      },
+      {
+        path: ':id/edit',
+        name: 'CategoryEdit',
+        meta: { title: 'Edit' },
+        component: () => import(/* webpackChunkName: "category" */ '../views/category/form.vue'),
+      },
+    ],
   }
 ]
 
