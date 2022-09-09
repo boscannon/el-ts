@@ -36,7 +36,7 @@
         v-model:currentPage="table.current_page"
         :page-size="search.per_page"
         background
-        layout="total, sizes, prev, pager, next, jumper"
+        layout="sizes, prev, pager, next, jumper"
         :total="table.total"
         :page-sizes="[10, 50, 100, 200]"
         @size-change="handleSizeChange"
@@ -92,10 +92,10 @@ const handleCurrentChange = (val: number) => {
   getList()
 }
 
-const handleSortChange = ({ prop, order }: { prop: string | null, order: string | null}) => {
-  search.sort = prop;
-  search.sort_by = order == 'descending' ? 'desc' : 'asc';
-  getList()
+const handleSortChange = ({ column, prop, order }) => {
+  console.log(column, prop, order);
+  //search.page = val;
+  //getList()
 }
 getList()
 </script>
