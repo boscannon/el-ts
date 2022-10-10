@@ -12,12 +12,19 @@
     </div>
 
     <!-- table -->
-    <el-table :data="table.data" style="width: 100%" v-loading="loading" @sort-change="handleSortChange">
+    <el-table 
+      :data="table.data" 
+      style="width: 100%" 
+      v-loading="loading" 
+      @sort-change="handleSortChange"
+      :default-sort="{ prop: search.sort, order: search.sort_by }"
+    >
       <el-table-column label="#" type="index" />
       <el-table-column label="id" prop="id" sortable/>
       <el-table-column label="title" prop="title" sortable/>
       <el-table-column label="name" prop="name" sortable/>
       <el-table-column label="created_at" prop="created_at" sortable/>
+      <el-table-column label="updated_at" prop="updated_at" sortable/>
       <el-table-column label="actions">
         <template #default="scope">
           <el-button size="small" :icon="Edit" @click="$router.push({ name: listRoute.edit, params: { id: scope.row.id }})">
@@ -57,7 +64,7 @@ import { useI18n } from "vue-i18n"
 
 const { t } = useI18n();
 const loading = ref<boolean>(false);
-const search = reactive<SearchInterface>({ query: '', page: 1, per_page: 10 });
+const search = reactive<SearchInterface>({ query: '', page: 1, per_page: 10, sort: 'updated_at', sort_by: 'descending' });
 const table = ref<ListInterface>({ data: [], current_page: 1, total: 1 });
 
 const handleDelete = (index: number, row: RowInterface) => {
@@ -92,10 +99,10 @@ const handleCurrentChange = (val: number) => {
   getList()
 }
 
-const handleSortChange = ({ column, prop, order }) => {
-  console.log(column, prop, order);
-  //search.page = val;
-  //getList()
+const handleSortChange = ({ prop, order }: { prop: string | null, order: string | null}) => {
+  search.sort = prop;
+  search.sort_by = order;
+  getList()
 }
 getList()
 </script>

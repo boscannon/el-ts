@@ -12,12 +12,19 @@
     </div>
 
     <!-- table -->
-    <el-table :data="table.data" style="width: 100%" v-loading="loading" @sort-change="handleSortChange">
+    <el-table 
+      :data="table.data" 
+      style="width: 100%" 
+      v-loading="loading" 
+      @sort-change="handleSortChange"
+      :default-sort="{ prop: search.sort, order: search.sort_by }"
+    >
       <el-table-column label="#" type="index" />
       <el-table-column label="id" prop="id" sortable/>
       <el-table-column label="title" prop="title" sortable/>
       <el-table-column label="name" prop="name" sortable/>
       <el-table-column label="created_at" prop="created_at" sortable/>
+      <el-table-column label="updated_at" prop="updated_at" sortable/>
       <el-table-column label="actions">
         <template #default="scope">
           <el-button size="small" :icon="Edit" @click="$router.push({ name: listRoute.edit, params: { id: scope.row.id }})">
@@ -51,21 +58,22 @@
 import { ref, reactive } from 'vue'
 import { Delete, Edit, Plus, Search } from '@element-plus/icons-vue'
 import { ElMessage,  } from 'element-plus'
+import type { GlobaMessageInterface } from '@/interface'
 import type { SearchInterface, ListInterface, RowInterface } from './action'
 import { apiResource, listRoute } from './action'
 import { useI18n } from "vue-i18n"
 
 const { t } = useI18n();
 const loading = ref<boolean>(false);
-const search = reactive<SearchInterface>({ query: '', page: 1, per_page: 10 });
+const search = reactive<SearchInterface>({ query: '', page: 1, per_page: 10, sort: 'updated_at', sort_by: 'descending' });
 const table = ref<ListInterface>({ data: [], current_page: 1, total: 1 });
 
 const handleDelete = (index: number, row: RowInterface) => {
-  apiResource.delete(row.id)
+  apiResource.delete<GlobaMessageInterface>(row.id)
   .then(response => {
     ElMessage({
       type: 'success',
-      message: t('Success', { action: t('Delete') }),
+      message: response.message
     })
     getList();
   })
@@ -94,7 +102,7 @@ const handleCurrentChange = (val: number) => {
 
 const handleSortChange = ({ prop, order }: { prop: string | null, order: string | null}) => {
   search.sort = prop;
-  search.sort_by = order == 'descending' ? 'desc' : 'asc';
+  search.sort_by = order;
   getList()
 }
 getList()

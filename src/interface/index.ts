@@ -7,6 +7,8 @@ export interface GlobaSearchInterface {
   query: string
   page: number
   per_page: number
+  sort: string | null
+  sort_by: string | null
 }
 
 export interface GlobaListInterface<T> {
