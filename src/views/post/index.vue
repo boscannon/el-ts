@@ -61,9 +61,9 @@ import { ElMessage,  } from 'element-plus'
 import type { GlobaMessageInterface } from '@/interface'
 import type { SearchInterface, ListInterface, RowInterface } from './action'
 import { apiResource, listRoute } from './action'
-import { useI18n } from "vue-i18n"
+// import { useI18n } from "vue-i18n"
 
-const { t } = useI18n();
+// const { t } = useI18n();
 const loading = ref<boolean>(false);
 const search = reactive<SearchInterface>({ query: '', page: 1, per_page: 10, sort: 'updated_at', sort_by: 'descending' });
 const table = ref<ListInterface>({ data: [], current_page: 1, total: 1 });

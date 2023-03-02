@@ -17,3 +17,5 @@ export const listRoute: { list: string, create: string, edit: string } = {
   create: 'PostCreate',
   edit: 'PostEdit',
 }
+
+export const auditResource: resource = new resource('audits');

@@ -69,7 +69,7 @@ const table = ref<ListInterface>({ data: [], current_page: 1, total: 1 });
 
 const handleDelete = (index: number, row: RowInterface) => {
   apiResource.delete(row.id)
-  .then(response => {
+  .then(() => {
     ElMessage({
       type: 'success',
       message: t('Success', { action: t('Delete') }),

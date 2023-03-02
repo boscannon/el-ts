@@ -32,7 +32,7 @@ import { ElMessage } from 'element-plus'
 import type { GlobaActionsInterface, GlobaMessageInterface } from '@/interface'
 import type { RowInterface } from './action'
 import { useI18n } from "vue-i18n"
-import { apiResource } from './action'
+import { apiResource, auditResource } from './action'
 
 const { t } = useI18n();
 const route = useRoute();
@@ -51,6 +51,11 @@ const getData = async () => {
   if(route.params.id){
     actionStatus.value = 'edit';
     ruleForm.value = await apiResource.show<RowInterface>(route.params.id)
+
+    auditResource.list({
+      table: 'posts',
+      table_id: route.params.id,
+    });
   }
 }
 getData();
