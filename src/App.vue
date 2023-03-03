@@ -1,13 +1,22 @@
 <template>
   <div class="common-layout">
-    <el-container>
-      <el-aside width="200px">Aside</el-aside>
+    <el-container class='main' >
+      <div v-if="sidebar" class="drawer-bg" @click="handleClickOutside" />
+      <el-aside width="200px">
+        Aside
+        <!-- <sidebar class="sidebar-container" /> -->
+      </el-aside>
       <el-container>
-        <el-header>Header</el-header>
-        <el-main><router-view/></el-main>
-        <el-footer>Footer</el-footer>
+        <el-header>
+          <!-- <headerbar/> -->
+          Header
+        </el-header>
+        
+        <el-main>
+          <router-view />
+        </el-main>
       </el-container>
-    </el-container>
+    </el-container>    
   </div>
 </template>
 
@@ -24,3 +33,12 @@
   padding: 50px 0px;
 }
 </style>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+const sidebar = ref(true);
+
+const handleClickOutside = () => {
+  sidebar.value = !sidebar.value;
+}
+</script>
